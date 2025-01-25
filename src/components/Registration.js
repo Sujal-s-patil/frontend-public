@@ -1,59 +1,115 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
     fullName: '',
-    aadharCardNo: '',
+    aadharcardno: '',
     email: '',
-    phoneNo: '',
+    phoneno: '',
     address: '',
     city: '',
     state: '',
     password: '',
     confirmPassword: '',
-    photo: null,
+    photo: null, // Photo field
   });
-
+  const [passwordMatch, setPasswordMatch] = useState(true);
   const navigate = useNavigate();
 
+  // Ensure password and confirm password match
+  useEffect(() => {
+    setPasswordMatch(formData.password === formData.confirmPassword);
+  }, [formData.password, formData.confirmPassword]);
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
+    // Handle photo upload
     if (name === 'photo') {
-      setFormData({ ...formData, photo: files[0] });
+      setFormData({ ...formData, photo: files?.[0] || null });
+    } else if (name === 'aadharcardno' || name === 'phoneno') {
+      // Convert aadharcardno and phoneno to numbers
+      setFormData({ ...formData, [name]: value.replace(/\D/g, '') }); // Allow only numeric characters
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
+  // Convert file to Base64
+  const convertFileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result); // Base64 string
+      reader.onerror = (error) => reject(error);
+    });
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    if (!passwordMatch) {
       alert('Passwords do not match!');
       return;
     }
 
-    const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
-    });
+    // Validate Aadhar Card and Phone Number length
+    if (formData.aadharcardno.length !== 12) {
+      alert('Aadhar Card Number must be exactly 12 digits.');
+      return;
+    }
+
+    if (formData.phoneno.length !== 10) {
+      alert('Phone Number must be exactly 10 digits.');
+      return;
+    }
 
     try {
-      const response = await fetch('http://localhost:5500/register', {
+      let photoBase64 = null;
+
+      // If photo is provided, convert it to Base64
+      if (formData.photo) {
+        photoBase64 = await convertFileToBase64(formData.photo);
+      }
+
+      // Prepare JSON data to send
+      const dataToSend = {
+        fullName: formData.fullName,
+        aadharcardno: Number(formData.aadharcardno), // Ensure number
+        email: formData.email,
+        phoneno: Number(formData.phoneno), // Ensure number
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        password: formData.password,
+        photo: photoBase64, // Include Base64 photo if available
+      };
+
+      // Send JSON data to the server
+      const response = await fetch('http://localhost:5555/public/register', {
         method: 'POST',
-        body: formDataToSend,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend), // Convert data to JSON string
       });
 
       if (response.ok) {
-        alert('Registration successful!');
-        navigate('/'); // Redirect to login after successful registration
+        const result = await response.json();
+        if (result.message === 'success') {
+          alert('Registration successful!');
+          navigate('/'); // Redirect to login page after successful registration
+        } else {
+          alert(result.message || 'Failed to register.');
+        }
       } else {
-        alert('Failed to register.');
+        alert('Failed to register. Please try again.');
       }
     } catch (error) {
       console.error('Error during registration:', error);
-      alert('An error occurred.');
+      alert('An error occurred while submitting the form.');
     }
   };
 
@@ -63,9 +119,9 @@ const Registration = () => {
       <form onSubmit={handleSubmit}>
         {[
           { label: 'Full Name', name: 'fullName', type: 'text' },
-          { label: 'Aadhar Card No', name: 'aadharCardNo', type: 'text' },
+          { label: 'Aadhar Card No', name: 'aadharcardno', type: 'text' },
           { label: 'Email', name: 'email', type: 'email' },
-          { label: 'Phone No', name: 'phoneNo', type: 'tel' },
+          { label: 'Phone No', name: 'phoneno', type: 'text' },
           { label: 'Address', name: 'address', type: 'text' },
           { label: 'City', name: 'city', type: 'text' },
           { label: 'State', name: 'state', type: 'text' },
@@ -85,6 +141,9 @@ const Registration = () => {
                 boxSizing: 'border-box',
               }}
             />
+            {input.name === 'confirmPassword' && !passwordMatch && (
+              <div style={{ color: 'red', marginTop: '5px' }}>Passwords do not match!</div>
+            )}
           </div>
         ))}
         <div style={{ marginBottom: '15px' }}>
