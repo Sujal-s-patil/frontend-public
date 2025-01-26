@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Dashboard = () => {
   const [complaints, setComplaints] = useState([]); // State to store fetched data
   const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
   const [error, setError] = useState(null); // State for error handling
 
+  const navigate = useNavigate(); // Initialize navigate using useNavigate
+
   // Function to handle fetching complaints and showing the popup
   const handleCheckComplaints = async () => {
     try {
-
       const response = await fetch('http://localhost:5555/ticket/get', {
         method: 'GET',
         headers: {
@@ -65,8 +67,7 @@ const Dashboard = () => {
 
         {/* File a Complaint Button */}
         <button
-          // Uncomment and define navigation when needed
-          // onClick={() => navigate('/file-complaint')}
+          onClick={() => navigate('/file-complaint')} // Correct the path here
           style={{
             width: '100%',
             padding: '10px',
