@@ -43,8 +43,6 @@ const FileComplaint = () => {
       if (!idResponse.ok) {
         throw new Error('Failed to get complaint ID.');
       }
-      const complaint_id = await idResponse.json(); // Assuming server sends { "complaint_id": 1 }
-      const newComplaint_id = complaint_id[0].complaint_id + 1;
 
       // Step 2: Get `public_id` from session cookies
       const storedUserData = sessionStorage.getItem('userData');
@@ -56,7 +54,6 @@ const FileComplaint = () => {
 
       // Step 4: Construct the payload
       const payload = {
-        complaint_id: Number(newComplaint_id),
         ...complaintData,
         public_id: Number(userData.id), // Ensure public_id is sent as a number
         status: 'Pending',

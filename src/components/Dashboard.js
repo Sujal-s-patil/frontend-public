@@ -11,11 +11,17 @@ const Dashboard = () => {
   // Function to handle fetching complaints and showing the popup
   const handleCheckComplaints = async () => {
     try {
-      const response = await fetch('http://localhost:5555/ticket/get', {
-        method: 'GET',
+      const storedUserData = sessionStorage.getItem('userData');
+      const userData = JSON.parse(storedUserData);
+      const dataToSend = {
+        public_id: userData.id,
+      };
+      const response = await fetch('http://localhost:5555/ticket/specific', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(dataToSend), // Convert the data to JSON string
       });
 
       const data = await response.json();
