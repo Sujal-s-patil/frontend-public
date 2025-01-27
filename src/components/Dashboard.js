@@ -144,6 +144,7 @@ const Dashboard = () => {
               >
                 <thead>
                   <tr style={{ backgroundColor: '#f2f2f2' }}>
+                    <th style={{ padding: '10px', border: '1px solid #ddd' }}>Status</th> {/* Moved status to first column */}
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>Complainant Name</th>
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>Crime Type</th>
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>Crime Description</th>
@@ -151,7 +152,6 @@ const Dashboard = () => {
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>City</th>
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>State</th>
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>Crime Date</th>
-                    <th style={{ padding: '10px', border: '1px solid #ddd' }}>Status</th>
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>Date Filed</th>
                     <th style={{ padding: '10px', border: '1px solid #ddd' }}>Last Updated</th>
                   </tr>
@@ -161,6 +161,9 @@ const Dashboard = () => {
                     const cleanedComplaint = cleanComplaintData(complaint);
                     return (
                       <tr key={complaint.complaint_id}>
+                        <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                          {cleanedComplaint.status} {/* Moved status to first column */}
+                        </td>
                         <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                           {cleanedComplaint.complainant_name}
                         </td>
@@ -183,9 +186,6 @@ const Dashboard = () => {
                           {new Date(cleanedComplaint.crime_date).toLocaleString()}
                         </td>
                         <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                          {cleanedComplaint.status}
-                        </td>
-                        <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                           {new Date(cleanedComplaint.date_filed).toLocaleString()}
                         </td>
                         <td style={{ padding: '10px', border: '1px solid #ddd' }}>
@@ -195,6 +195,7 @@ const Dashboard = () => {
                     );
                   })}
                 </tbody>
+
               </table>
             </div>
           ) : (
