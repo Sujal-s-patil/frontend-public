@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../css/Registration.css';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -114,10 +115,10 @@ const Registration = () => {
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: '50px auto', textAlign: 'center' }}>
+    <div className="registration-container">
       <h2>Registration</h2>
       <form onSubmit={handleSubmit}>
-        {[
+        {[ 
           { label: 'Full Name', name: 'fullName', type: 'text' },
           { label: 'Aadhar Card No', name: 'aadharcardno', type: 'text' },
           { label: 'Email', name: 'email', type: 'email' },
@@ -128,63 +129,30 @@ const Registration = () => {
           { label: 'Password', name: 'password', type: 'password' },
           { label: 'Re-enter Password', name: 'confirmPassword', type: 'password' },
         ].map((input) => (
-          <div key={input.name} style={{ marginBottom: '15px' }}>
+          <div key={input.name} className="input-field">
             <input
               type={input.type}
               name={input.name}
               placeholder={input.label}
               value={formData[input.name] || ''}
               onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '10px',
-                boxSizing: 'border-box',
-              }}
             />
             {input.name === 'confirmPassword' && !passwordMatch && (
-              <div style={{ color: 'red', marginTop: '5px' }}>Passwords do not match!</div>
+              <div className="error-message">Passwords do not match!</div>
             )}
           </div>
         ))}
-        <div style={{ marginBottom: '15px' }}>
+        <div className="input-field">
           <input
             type="file"
             name="photo"
             accept="image/*"
             onChange={handleChange}
-            style={{ width: '100%', padding: '10px' }}
           />
         </div>
-        <button
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#007BFF',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            borderRadius: '5px',
-            marginBottom: '15px',
-          }}
-        >
-          Register
-        </button>
+        <button type="submit" className="submit-button">Register</button>
       </form>
-      <button
-        onClick={() => navigate('/')}
-        style={{
-          width: '100%',
-          padding: '10px',
-          backgroundColor: '#6C757D',
-          color: 'white',
-          border: 'none',
-          cursor: 'pointer',
-          borderRadius: '5px',
-        }}
-      >
-        Back to Login
-      </button>
+      <button onClick={() => navigate('/')} className="back-button">Back to Login</button>
     </div>
   );
 };
