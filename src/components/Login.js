@@ -28,7 +28,7 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok && data.message === "Login successful") {
-        sessionStorage.setItem('userData', JSON.stringify(data.user));
+        sessionStorage.setItem('userData', JSON.stringify(data[0]));
         navigate('/dashboard');
       } else {
         setErrorMessage(data.message || 'Login failed');
