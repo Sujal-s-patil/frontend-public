@@ -37,7 +37,7 @@ const FileComplaint = () => {
 
     try {
       // Step 1: Get `complaint_id` from the server
-      const idResponse = await fetch('http://localhost:5555/ticket/last', {
+      const idResponse = await fetch(`${process.env.REACT_APP_API_URL}/ticket/last`, {
         method: 'GET',
       });
       if (!idResponse.ok) {
@@ -69,7 +69,7 @@ const FileComplaint = () => {
           payload.file = fileBase64; // Add the Base64-encoded file to the payload
 
           // Step 5: Send the payload to the server
-          const response = await fetch('http://localhost:5555/ticket/create', {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/ticket/create`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const FileComplaint = () => {
         fileReader.readAsDataURL(file);
       } else {
         // If no file, directly send the payload
-        const response = await fetch('http://localhost:5555/ticket/create', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/ticket/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

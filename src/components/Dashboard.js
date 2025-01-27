@@ -16,7 +16,7 @@ const Dashboard = () => {
       const dataToSend = {
         public_id: userData.id,
       };
-      const response = await fetch('http://localhost:5555/ticket/specific', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/ticket/specific`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

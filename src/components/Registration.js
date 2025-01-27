@@ -89,7 +89,7 @@ const Registration = () => {
       };
 
       // Send JSON data to the server
-      const response = await fetch('http://localhost:5555/public/register', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/public/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
